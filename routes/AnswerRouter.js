@@ -10,7 +10,7 @@ import {
 
 const AnswerRouter = express.Router();
 
-AnswerRouter.post("/", authMiddleware, createAnswer);
+AnswerRouter.post("/create", authMiddleware, createAnswer);
 AnswerRouter.get("/:postId", getAnswersByPost);
 AnswerRouter.put("/:answerId", authMiddleware, updateAnswer);
 AnswerRouter.delete("/:answerId", authMiddleware, deleteAnswer);

@@ -11,6 +11,5 @@ const PostRouter = express.Router();
  * @access  Private
  **/
 PostRouter.route("/createpost").post(authMiddleware, createPost);
-// PostRouter.route("/vote", authMiddleware, vote);
 
 export default PostRouter;

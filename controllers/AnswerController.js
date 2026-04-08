@@ -20,9 +20,13 @@ const createAnswer = async (req, res) => {
         message: "Content and postId are required"
       });
     }
-
-    const post = await Post.findById(postId).session(session);
-
+    var post;
+    try {
+      post = await Post.findById(postId).where({ isDeleted: false }).session(session);
+    } catch (queryError) {
+      console.error("Query Error Details:", queryError);
+      throw queryError;
+    }
     if (!post) {
       return res.status(404).json({
         success: false,
@@ -63,10 +67,12 @@ const createAnswer = async (req, res) => {
     session.endSession();
 
     console.error("Create Answer Error:", error.message);
+    console.error("Full Stack:", error.stack);
 
     return res.status(500).json({
       success: false,
-      message: "Failed to create answer"
+      message: "Failed to create answer",
+      error: error.message
     });
   }
 };
@@ -229,7 +235,7 @@ const acceptAnswer = async (req, res) => {
       });
     }
 
-    const post = await Post.findById(answer.post).session(session);
+    const post = await Post.findById(answer.post).where({ isDeleted: false }).session(session);
 
     // 🔒 Only post owner can accept
     if (post.author.toString() !== userId.toString()) {

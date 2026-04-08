@@ -13,7 +13,7 @@ const vote = async (req, res) => {
     const { targetId, targetType, value } = req.body;
 
     // ✅ Validation
-    if (!targetId || !targetType || ![1, -1].includes(value)) {
+    if (!targetId || !targetType || [1, -1].includes(value)) {
       return res.status(400).json({
         success: false,
         message: "Invalid vote data"
@@ -23,7 +23,7 @@ const vote = async (req, res) => {
     // ✅ Select model dynamically
     const Model = targetType === "Post" ? Post : Answer;
 
-    const target = await Model.findById(targetId).session(session);
+    const target = await Model.findById(targetId).session(session); //got my post
 
     if (!target) {
       return res.status(404).json({
@@ -69,7 +69,7 @@ const vote = async (req, res) => {
     }
 
     // ✅ Update voteScore atomically
-    target.voteScore += scoreChange;
+    target.voteScore = Number(target.voteScore) + Number(scoreChange);
     await target.save({ session });
 
     await session.commitTransaction();

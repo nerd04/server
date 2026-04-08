@@ -94,10 +94,4 @@ PostSchema.index({ voteScore: -1, createdAt: -1 });
 PostSchema.index({ topic: 1, createdAt: -1 });
 
 
-// 🛡️ AUTO FILTER DELETED POSTS
-PostSchema.pre(/^find/, function (next) {
-  this.where({ isDeleted: false });
-  next();
-});
-
 export default mongoose.model("Post", PostSchema);
